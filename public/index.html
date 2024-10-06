@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket 채팅</title>
+</head>
+<body>
+    <h1>WebSocket 채팅</h1>
+    <div id="chatbox"></div>
+    <input id="username" type="text" placeholder="이름" />
+    <input id="message" type="text" placeholder="메시지" />
+    <button onclick="sendMessage()">전송</button>
+
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        const ws = new WebSocket('ws://localhost:3000/ws');
+
+        ws.onmessage = function(event) {
+            const msg = JSON.parse(event.data);
+            chatbox.innerHTML += `<p><strong>${msg.username}:</strong> ${msg.message}</p>`;
+        };
+
+        function sendMessage() {
+            const username = document.getElementById('username').value;
+            const message = document.getElementById('message').value;
+            ws.send(JSON.stringify({ username: username, message: message }));
+            document.getElementById('message').value = '';
+        }
+    </script>
+</body>
+</html>
