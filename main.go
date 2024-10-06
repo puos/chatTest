@@ -9,7 +9,7 @@ import (
 
 type Message struct {
 	Room     string `json:"room"`
-	UserName string `json:"userName"`
+	UserName string `json:"username"`
 	Message  string `json:"message"`
 }
 
