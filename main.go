@@ -43,28 +43,29 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 
-	var roomName string
+    room := r.URL.Query().Get("room")
+	if room == "" {
+	   room = "default"
+	 }	
+
+	 if rooms[room] == nil {
+		 rooms[room] = make(map[*websocket.Conn]bool)
+	 }
+
+	 rooms[room][ws] = true
+	
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			log.Printf("메시지 읽기 오류: %v", err)
+			delete(rooms[room], ws)
 			break
 		}
-		if roomName == "" {
-			roomName = msg.Room
-			if rooms[roomName] == nil {
-				rooms[roomName] = make(map[*websocket.Conn]bool)
-			}
-			rooms[roomName][ws] = true
-		}
+		msg.Room = room
 		broadcast <- msg
 	}
 
-	if roomName != "" {
-		delete(rooms[roomName], ws)
-		ws.Close()
-	}
 }
 
 func handleMessages() {
