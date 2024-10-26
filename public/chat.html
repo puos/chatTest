@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅</title>
+ </head>
+<body>
+    <h1>채팅</h1>
+    <div id="chatbox"></div>
+    <input id="message" type="text" placeholder="메시지" />
+    <button onclick="sendMessage()">전송</button>
+    
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        let ws;
+        let username;
+
+        function connectWebSocket(room,userId) {
+            username = userId;
+            ws = new WebSocket(`ws://localhost:3000/ws?room=${room}&userId=${userId}`);
+            ws.onopen = function() {
+                console.log('웹소켓 연결 성공');
+            };
+            ws.onmessage = function(event) {
+                const message = JSON.parse(event.data);
+                const messageElement = document.createElement('div');
+                messageElement.textContent = `${message.username}: ${message.message}`;
+                chatbox.appendChild(messageElement);
+            };
+
+            ws.onclose = function() {
+                console.log('웹소켓 연결 종료');
+            };  
+
+        }
+
+        function sendMessage() {
+            
+            const message = document.getElementById('message').value;
+            if (ws && username && message) {
+                ws.send(JSON.stringify({ username , message }));
+            }
+        }
+
+        // Parse room from query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const room = urlParams.get('room');
+        const userId = urlParams.get('userId');
+        if (room && userId) {
+            connectWebSocket(room,userId);
+        } else {
+            alert('방 정보가 없습니다.');
+        }
+    </script>
+
+</body>
+</html>

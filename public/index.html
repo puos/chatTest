@@ -13,51 +13,26 @@
             <option value="room1">방 1</option>
             <option value="room2">방 2</option>
             <option value="room3">방 3</option>
+            <option value="room3">방 4</option>
         </select>
     </div>
-    <div id="chatbox"></div>
-    <input id="username" type="text" placeholder="이름" />
-    <input id="message" type="text" placeholder="메시지" />
-    <button onclick="sendMessage()">전송</button>
+    <div>
+        <label for="userId">이름:</label>
+        <input id="userId" type="text"  placeholder="사용자 ID"/>
+    </div>
+    <button onclick="enterRoom()">입장</button>
 
     <script>
-        const chatbox = document.getElementById('chatbox');
-        const roomSelect = document.getElementById('room');
-        let ws;
-
-        function connectWebSocket() {
-            const room = roomSelect.value;
-            ws = new WebSocket(`ws://localhost:3000/ws?room=${room}`);
-
-            ws.onmessage = function(event) {
-                const msg = JSON.parse(event.data);
-                const messageElement = document.createElement('div');
-                messageElement.textContent = `${msg.username}: ${msg.message}`;
-                chatbox.appendChild(messageElement);
-            };
-
-            ws.onclose = function() {
-                console.log('WebSocket connection closed');
-            };
-        }
-
-        roomSelect.addEventListener('change', function() {
-            if (ws) {
-                ws.close();
+        function enterRoom() {
+            const room = document.getElementById('room').value;
+            const userId = document.getElementById('userId').value;
+            if (!userId) {
+                alert('사용자 ID를 입력하세요.');
+                return;
             }
-            connectWebSocket();
-        });
-
-        function sendMessage() {
-            const username = document.getElementById('username').value;
-            const message = document.getElementById('message').value;
-            if (ws && username && message) {
-                ws.send(JSON.stringify({ username, message }));
-            }
+            window.location.href = `chat.html?room=${room}&userId=${userId}`;   
         }
-
-        // Connect to the default room on page load
-        connectWebSocket();
     </script>
+
 </body>
 </html>

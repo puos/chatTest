@@ -43,17 +43,18 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 
-    room := r.URL.Query().Get("room")
+	room := r.URL.Query().Get("room")
+	//userId := r.URL.Query().Get("userId")
 	if room == "" {
-	   room = "default"
-	 }	
+		room = "default"
+	}
 
-	 if rooms[room] == nil {
-		 rooms[room] = make(map[*websocket.Conn]bool)
-	 }
+	if rooms[room] == nil {
+		rooms[room] = make(map[*websocket.Conn]bool)
+	}
 
-	 rooms[room][ws] = true
-	
+	rooms[room][ws] = true
+
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg)
