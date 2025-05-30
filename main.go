@@ -31,7 +31,6 @@ func main() {
 	if err != nil {
 		log.Fatal("서버 시작 실패: ", err)
 	}
-
 }
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
