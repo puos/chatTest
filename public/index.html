@@ -10,11 +10,13 @@
     <div>
         <label for="room">방 선택:</label>
         <select id="room">
-            <option value="room1">방 1</option>
-            <option value="room2">방 2</option>
-            <option value="room3">방 3</option>
-            <option value="room3">방 4</option>
+           
         </select>
+    </div>
+    <div>
+        <label for="newRoom">새 방 생성:</label>
+        <input id="newRoom" type="text" placeholder="새 방 이름"/>
+        <button onclick="createRoom()">생성</button>
     </div>
     <div>
         <label for="userId">이름:</label>
@@ -23,6 +25,25 @@
     <button onclick="enterRoom()">입장</button>
 
     <script>
+        function createRoom(){
+            const newRoomInput = document.getElementById('newRoom');
+            const newRoomName = newRoomInput.value.trim();
+            if (!newRoomName) {
+                alert('방 이름을 입력하세요.');
+                return;
+            }
+
+            const roomSelect = document.getElementById('room');
+            const newOption = document.createElement('option');
+            newOption.value = newRoomName;
+            newOption.textContent = newRoomName;
+
+            roomSelect.appendChild(newOption);
+            roomSelect.value = newRoomName; 
+            newRoomInput.value = ''; // 입력 필드 초기화
+            alert(`새 방 "${newRoomName}"이 생성되었습니다.`);
+        }
+
         function enterRoom() {
             const room = document.getElementById('room').value;
             const userId = document.getElementById('userId').value;
