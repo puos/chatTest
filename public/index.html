@@ -9,13 +9,13 @@
     <h1>WebSocket 채팅</h1>
     <div>
         <label for="room">방 선택:</label>
-        <select id="room">
+        <select id="roomSelect">
            
         </select>
     </div>
     <div>
         <label for="newRoom">새 방 생성:</label>
-        <input id="newRoom" type="text" placeholder="새 방 이름"/>
+        <input id="newRoomInput" type="text" placeholder="새 방 이름"/>
         <button onclick="createRoom()">생성</button>
     </div>
     <div>
@@ -26,26 +26,38 @@
 
     <script>
         function createRoom(){
-            const newRoomInput = document.getElementById('newRoom');
+            const newRoomInput = document.getElementById('newRoomInput');
             const newRoomName = newRoomInput.value.trim();
+            
             if (!newRoomName) {
                 alert('방 이름을 입력하세요.');
                 return;
             }
 
-            const roomSelect = document.getElementById('room');
+            const roomSelect = document.getElementById('roomSelect');
             const newOption = document.createElement('option');
             newOption.value = newRoomName;
             newOption.textContent = newRoomName;
 
+            // 이미 존재하는 방인지 확인
+            for(let i = 0; i < roomSelect.options.Length; i++){
+                if(roomSelect.options[i].value === newRoomName){
+                    alert(`방 "${newRoomName}"은 이미 존재합니다.`);
+                    return;
+                }
+            }
+
+            // 새로운 방 추가
             roomSelect.appendChild(newOption);
             roomSelect.value = newRoomName; 
             newRoomInput.value = ''; // 입력 필드 초기화
+
             alert(`새 방 "${newRoomName}"이 생성되었습니다.`);
         }
 
         function enterRoom() {
-            const room = document.getElementById('room').value;
+            
+            const room = document.getElementById('roomSelect').value;
             const userId = document.getElementById('userId').value;
             if (!userId) {
                 alert('사용자 ID를 입력하세요.');
